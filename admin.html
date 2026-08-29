@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LarryLand Admin</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080a0e;--panel:#10151f;--panel2:#171d29;--text:#f2f4f7;--muted:#9299a8;--line:#293241;--accent:#c7cbd3;--green:#78e0a7;--red:#ff7180}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:"Montserrat",ui-sans-serif,system-ui,sans-serif}.container{width:min(1320px,calc(100% - 32px));margin:auto}
+header{padding:42px 0 28px;border-bottom:1px solid var(--line)}.top{display:flex;justify-content:space-between;align-items:flex-end;gap:20px}.brand{display:flex;align-items:baseline;gap:18px}.brand .eyebrow{margin-bottom:0}.eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#7e8798;font-weight:800;margin-bottom:8px}h1{font-size:42px;line-height:1;margin:0;font-weight:900;letter-spacing:-.045em}.back{color:#aeb6c4;text-decoration:none;font-size:13px;font-weight:700;border:1px solid var(--line);padding:10px 14px;border-radius:9px;background:#111722}.back:hover{color:#fff;border-color:#4a5568}
+main{padding:28px 0 50px}.toolbar{display:grid;grid-template-columns:2fr repeat(4,1fr) 34px;gap:10px;margin-bottom:22px}.clear-filters{width:34px;height:50px;align-self:stretch;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:#8e97a7;font:500 24px/1 Montserrat,sans-serif;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;transition:color .15s ease,border-color .15s ease,background .15s ease}.clear-filters:hover{color:#fff;border-color:#4b5669;background:#151b26}.clear-filters:focus-visible{outline:2px solid #69758a;outline-offset:2px}
+.searchwrap{min-width:0}.search{width:100%;min-width:0;display:block;box-sizing:border-box;background:var(--panel);border:1px solid var(--line);border-radius:10px;color:var(--text);text-align:center;padding:14px 15px;font:600 14px Montserrat,sans-serif;min-height:50px;outline:none;cursor:text}.search::placeholder{color:#9299a8;text-align:center}.search:focus{border-color:#5b6374;background:#151b26}
+.filter-wrap{position:relative;min-width:0}.filter-trigger{width:100%;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:14px 15px;font:600 14px Montserrat,sans-serif;outline:none;min-height:50px;text-align:center;cursor:pointer}.filter-trigger:hover,.filter-trigger[aria-expanded="true"]{border-color:#5b6374;background:#151b26}.filter-popover{position:absolute;left:0;right:0;top:calc(100% + 7px);z-index:20;background:#10151f;border:1px solid #303a4b;border-radius:12px;padding:7px;box-shadow:0 18px 40px rgba(0,0,0,.45);max-height:280px;overflow-y:auto}.filter-option{width:100%;display:block;border:0;background:transparent;color:#dce1e8;border-radius:8px;padding:10px 12px;font:600 13px Montserrat,sans-serif;text-align:center;cursor:pointer}.filter-option:hover,.filter-option.selected{background:#202b3d;color:#fff}.filter-option.clear-option{color:#9da7b8;border-bottom:1px solid #252e3b;margin-bottom:5px}
+.editor{display:grid;grid-template-columns:minmax(235px,.65fr) minmax(260px,.72fr) minmax(0,5.2fr);gap:18px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:18px}.panel-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.panel-title h2{font-size:14px;margin:0;font-weight:800}.panel-title span{font-size:11px;color:#70798a}
+.editor>.panel:nth-child(2){padding:14px}.editor>.panel:nth-child(2) .panel-title{margin-bottom:10px}.editor>.panel:nth-child(2) .section{padding-bottom:12px;margin-bottom:12px}.editor>.panel:nth-child(2) .fields{gap:8px}.editor>.panel:nth-child(2) .field label{margin-bottom:4px}.editor>.panel:nth-child(2) .field input{min-height:38px;padding:9px 11px}.editor>.panel:nth-child(2) .coord{gap:7px}.editor>.panel:nth-child(2) .hint{margin-top:6px;line-height:1.35}.editor>.panel:nth-child(2) .actions{margin-top:0}.editor>.panel:nth-child(2) .btn{min-height:40px;padding:8px}.editor>.panel:nth-child(2) .status{margin-top:7px}.lineup-list{height:700px;overflow:hidden}.lineup-list-items{display:grid;gap:7px;overflow:auto;height:calc(100% - 58px);padding-right:3px}.lineup-item{width:100%;text-align:left;padding:11px 12px;border:1px solid transparent;border-radius:9px;background:#151c28;color:#aeb6c4;font:600 11px Montserrat,sans-serif;cursor:pointer;line-height:1.35}.lineup-item:hover{background:#1b2534}.lineup-item.active{background:#263247;border-color:#3b4960;color:#f2f4f7}.lineup-item small{display:block;margin-top:4px;color:#6f7a8d;font-size:9px;font-weight:600}.lineup-list .hint{margin-bottom:12px}
+.fields{display:grid;gap:12px}.field label{display:block;color:#7f8899;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin:0 0 6px}.field input{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:10px;min-height:44px;padding:11px 12px;color:#cfd5df;font:600 13px Montserrat,sans-serif}.coord{display:grid;grid-template-columns:1fr 1fr;gap:8px}.section{padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid #242d3a}.section:last-child{border-bottom:0;padding-bottom:0;margin-bottom:0}.section-title{font-size:12px;font-weight:800;margin-bottom:11px}.hint{color:#697385;font-size:11px;line-height:1.5;margin-top:9px}.actions{display:flex;gap:8px}.btn{flex:1;min-height:44px;border-radius:9px;border:1px solid var(--line);background:#171e2a;color:#e7ebf0;font:700 13px Montserrat,sans-serif;cursor:pointer}.btn.primary{background:#263247;border-color:#3b4960}.btn:disabled{opacity:.55;cursor:default}.status{font-size:10px;color:#667082;text-align:center;margin-top:10px}
+.map-panel{display:flex;flex-direction:column}.map-panel .map-actions{margin-top:auto;padding-top:18px}.map-panel .status{margin-bottom:0}
+.map-stage{position:relative;aspect-ratio:16/10;overflow:hidden;border-radius:11px;border:1px solid #2b3545;background:#111a27;cursor:crosshair}.map-image{position:absolute;left:50%;top:50%;width:100%;height:100%;object-fit:contain;padding:0;z-index:1;transform:translate(-50%,-50%)}.map-stage:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,10,14,.08),rgba(8,10,14,.14));z-index:2;pointer-events:none}.map-name{position:absolute;top:12px;left:12px;z-index:5;padding:6px 9px;border-radius:6px;background:rgba(7,10,14,.88);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.pin{position:absolute;z-index:6;width:9px;height:9px;border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 2px rgba(120,224,167,.12),0 2px 6px rgba(0,0,0,.45);pointer-events:none}.origin{background:var(--green);border:1px solid #d9ffe9}.landing{width:10px;height:10px;border-radius:0;box-shadow:none}.landing:before,.landing:after{content:"";position:absolute;left:50%;top:50%;width:2px;height:12px;background:#ff3d5f;border-radius:1px;box-shadow:0 1px 4px rgba(0,0,0,.55)}.landing:before{transform:translate(-50%,-50%) rotate(45deg)}.landing:after{transform:translate(-50%,-50%) rotate(-45deg)}.legend{display:flex;gap:18px;margin-top:12px;color:#858e9e;font-size:11px;font-weight:700}.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:var(--green)}.legend .x{border-radius:0;background:var(--red)}.map-instruction{margin-top:10px;color:#7d8798;font-size:11px;line-height:1.5}.mode-row{display:flex;gap:8px;margin-top:12px}.mode{flex:1;min-height:38px}.mode.active-origin{background:#1e4936;border-color:#3d7659;color:#9af0bd}.mode.active-landing{background:#52202a;border-color:#7c3643;color:#ff9aa5}
+.empty{padding:35px 15px;text-align:center;color:#70798a;font-size:12px}.loading{display:flex;justify-content:center;align-items:center;height:100%;min-height:180px}.dots{display:flex;gap:7px}.dot{width:8px;height:8px;border-radius:50%;background:#aeb6c4;animation:loadingDots 1.2s infinite ease-in-out}.dot:nth-child(2){animation-delay:.15s}.dot:nth-child(3){animation-delay:.3s}@keyframes loadingDots{0%,80%,100%{opacity:.25;transform:scale(.75)}40%{opacity:1;transform:scale(1)}}
+@media(max-width:1000px){.editor{grid-template-columns:minmax(210px,.7fr) minmax(250px,1fr)}.editor>.panel:last-child{grid-column:1 / -1}.lineup-list{height:520px}}@media(max-width:800px){.editor{grid-template-columns:1fr}.toolbar{grid-template-columns:1fr 34px}.top{align-items:flex-start;flex-direction:column}.back{align-self:flex-start}.lineup-list{height:430px}}
+</style>
+
+.auth-gate{position:fixed;inset:0;z-index:100;background:#080a0e;display:flex;align-items:center;justify-content:center;padding:24px}.auth-gate-card{width:min(390px,100%);text-align:center;background:#10151f;border:1px solid #303a4b;border-radius:16px;padding:30px;box-shadow:0 24px 70px rgba(0,0,0,.45)}.auth-gate-card h2{margin:0 0 8px;font-size:22px}.auth-gate-card p{color:#9299a8;font-size:13px;line-height:1.5;margin:0 0 20px}.auth-gate-error{color:#ff7180;font-size:12px;margin-top:12px;line-height:1.4}.auth-gate a{display:inline-block;margin-top:15px;color:#aeb6c4;font-size:12px;text-decoration:none}.auth-gate a:hover{color:#fff}
+</head>
+<body>
+
+<div class="auth-gate" id="authGate">
+  <div class="auth-gate-card">
+    <h2>Admin access</h2>
+    <p id="authGateMessage">Checking your Google account…</p>
+    <div id="adminGoogleButton"></div>
+    <div class="auth-gate-error" id="authGateError"></div>
+    <a href="index.html">← Back to LarryLand</a>
+  </div>
+</div>
+
+<header><div class="container top"><div class="brand"><h1>Admin</h1><div class="eyebrow">LarryLand</div></div><a class="back" href="index.html">← Back to LarryLand</a></div></header>
+<main class="container">
+  <div class="toolbar">
+    <div class="searchwrap"><input id="search" class="search" placeholder='Search “X Site”, “X Main”, or “Retake”...' aria-label="Search lineup" autocomplete="off"></div>
+    <div class="filter-wrap"><button type="button" class="filter-trigger" id="mapTrigger">All Maps</button><div class="filter-popover" id="mapPopover" hidden></div></div>
+    <div class="filter-wrap"><button type="button" class="filter-trigger" id="agentTrigger">All Agents</button><div class="filter-popover" id="agentPopover" hidden></div></div>
+    <div class="filter-wrap"><button type="button" class="filter-trigger" id="utilityTrigger">All Utilities</button><div class="filter-popover" id="utilityPopover" hidden></div></div>
+    <div class="filter-wrap"><button type="button" class="filter-trigger" id="sideTrigger">Attack + Defense</button><div class="filter-popover" id="sidePopover" hidden></div></div><button type="button" class="clear-filters" id="clearFilters" aria-label="Clear all filters and search" title="Clear all filters">×</button>
+  </div>
+  <div class="editor">
+    <aside class="panel lineup-list">
+      <div class="panel-title"><h2>Lineups</h2><span id="resultCount">0 results</span></div>
+      <div class="hint">Select a lineup to edit its positioning.</div>
+      <div class="lineup-list-items" id="lineupList"><div class="loading"><div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div></div></div>
+    </aside>
+    <aside class="panel">
+      <div class="panel-title"><h2>Lineup details</h2><span>Read only</span></div>
+      <div id="details"></div>
+    </aside>
+    <section class="panel map-panel">
+      <div class="panel-title"><h2>Map layout</h2><span>Positioning test</span></div>
+      <div class="map-stage" id="mapStage">
+        <img id="layoutImage" class="map-image" alt="Map layout">
+        <div class="map-name" id="mapName">—</div>
+        <div class="pin origin" id="originPin" hidden></div>
+        <div class="pin landing" id="landingPin" hidden></div>
+      </div>
+      <div class="legend"><span><i></i>Origin</span><span><i class="x"></i>Landing</span></div>
+      <div class="mode-row"><button class="btn mode active-origin" id="originMode">Set origin</button><button class="btn mode" id="landingMode">Set landing</button></div>
+      <div class="map-instruction">Choose a point type, then click the map. Coordinates are shown in the lineup details panel. Save coordinates writes the four values to the selected lineup ID in Google Sheets.</div>
+      <div class="map-actions actions"><button class="btn" id="resetBtn">Reset</button><button class="btn primary" id="saveBtn">Save coordinates</button></div>
+      <div class="status" id="saveStatus">V1.29 Test 21 · Google Sheet writes enabled</div>
+    </section>
+  </div>
+</main>
+<script>
+const SHEET_API_URL="https://script.google.com/macros/s/AKfycbzc-sgwiCKy0sc9jt_EyxholR7FOHUBodu94wmnzaROxgB5OlYmQCb-1pHhaDnRCodz_g/exec";
+const $=id=>document.getElementById(id), clean=s=>(s||"").trim();
+let lineups=[], selected=null, mode="origin";
+const filters={map:"",agent:"",utility:"",side:""};
+const meta={map:{trigger:"mapTrigger",popover:"mapPopover",label:"All Maps"},agent:{trigger:"agentTrigger",popover:"agentPopover",label:"All Agents"},utility:{trigger:"utilityTrigger",popover:"utilityPopover",label:"All Utilities"},side:{trigger:"sideTrigger",popover:"sidePopover",label:"Attack + Defense"}};
+const coords={};
+let saving=false;
+function normalizeSide(v){const n=clean(v).toUpperCase();return n==="ATT"||n==="ATTACK"?"ATT":n==="DEF"||n==="DEFENSE"?"DEF":""}
+function unique(a){return [...new Set(a.map(clean).filter(Boolean))].sort((x,y)=>x.localeCompare(y))}
+function keyFor(x){return clean(x.ID)||[clean(x.NAME),clean(x.MAP),clean(x.AGENT),clean(x.UTILITY),clean(x.LINK)].join("|")}
+function esc(v){return clean(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
+function setOptions(id,values){const m=meta[id],p=$(m.popover),t=$(m.trigger),cur=filters[id];p.innerHTML="";const clear=document.createElement("button");clear.className="filter-option clear-option";clear.type="button";clear.textContent=m.label;clear.onclick=()=>selectFilter(id,"");p.appendChild(clear);values.forEach(v=>{const n=id==="side"?normalizeSide(v):clean(v);if(!n)return;const b=document.createElement("button");b.className="filter-option"+(n===cur?" selected":"");b.type="button";b.textContent=id==="side"?(n==="ATT"?"Attack":"Defense"):v;b.onclick=()=>selectFilter(id,n);p.appendChild(b)});t.textContent=id==="side"?(cur==="ATT"?"Attack":cur==="DEF"?"Defense":m.label):(cur||m.label)}
+function closePops(){Object.values(meta).forEach(m=>{$(m.popover).hidden=true;$(m.trigger).setAttribute("aria-expanded","false")})}
+function togglePop(id){const m=meta[id],p=$(m.popover),open=p.hidden;closePops();p.hidden=!open;$(m.trigger).setAttribute("aria-expanded",String(open))}
+function selectFilter(id,v){filters[id]=id==="side"?normalizeSide(v):clean(v);closePops();updateFilterOptions();renderList()}
+function filtered(){const q=$("search").value.toLowerCase().trim();return lineups.filter(x=>(!q||clean(x.NAME).toLowerCase().includes(q))&&(!filters.map||clean(x.MAP)===filters.map)&&(!filters.agent||clean(x.AGENT)===filters.agent)&&(!filters.utility||clean(x.UTILITY)===filters.utility)&&(!filters.side||normalizeSide(x.SIDE)===filters.side))}
+function renderList(){
+  const rows=filtered();
+  $("resultCount").textContent=rows.length+" result"+(rows.length===1?"":"s");
+  const list=$("lineupList");
+  if(!rows.length){list.innerHTML='<div class="empty">No lineups match the current filters.</div>';return}
+  list.innerHTML=rows.map((x,i)=>`<button type="button" class="lineup-item${selected&&keyFor(selected)===keyFor(x)?" active":""}" data-i="${i}">${esc(x.NAME)}<small>${esc(x.MAP)} · ${esc(x.AGENT)} · ${esc(x.UTILITY)} · ${esc(x.SIDE)}</small></button>`).join("");
+  list.querySelectorAll(".lineup-item").forEach(b=>b.onclick=()=>selectLineup(rows[Number(b.dataset.i)]));
+  if(!selected||!rows.some(x=>keyFor(x)===keyFor(selected))) selectLineup(rows[0]); else renderSelected();
+}
+function selectLineup(x){selected=x;renderListWithoutRecursion();renderSelected()}
+function renderListWithoutRecursion(){const rows=filtered(),list=$("lineupList");list.querySelectorAll(".lineup-item").forEach(b=>b.classList.toggle("active",rows[Number(b.dataset.i)]&&keyFor(rows[Number(b.dataset.i)])===keyFor(selected)))}
+function sheetCoordinate(value,fallback){
+  const n=Number(value);
+  return Number.isFinite(n)&&n>=0&&n<=100?n:fallback;
+}
+function getCoords(x){
+  const k=keyFor(x);
+  if(coords[k]) return coords[k];
+  const c={
+    ox:sheetCoordinate(x.ORIGIN_X,31),
+    oy:sheetCoordinate(x.ORIGIN_Y,64),
+    lx:sheetCoordinate(x.LANDING_X,71),
+    ly:sheetCoordinate(x.LANDING_Y,32)
+  };
+  coords[k]=c;
+  return c;
+}
+function renderSelected(){
+ if(!selected)return;
+ const c=getCoords(selected);
+ $("details").innerHTML=`<div class="section"><div class="section-title">Selected lineup</div><div class="fields"><div class="field"><label>ID</label><input value="${esc(selected.ID)}" readonly></div><div class="field"><label>Name</label><input value="${esc(selected.NAME)}" readonly></div><div class="field"><label>Agent</label><input value="${esc(selected.AGENT)}" readonly></div><div class="field"><label>Utility</label><input value="${esc(selected.UTILITY)}" readonly></div><div class="field"><label>Map</label><input value="${esc(selected.MAP)}" readonly></div><div class="field"><label>Side</label><input value="${esc(selected.SIDE)}" readonly></div></div></div>
+ <div class="section"><div class="section-title">Origin coordinates</div><div class="coord"><div class="field"><label>X</label><input value="${Number(c.ox).toFixed(2).replace(/\.00$/,"")}" readonly></div><div class="field"><label>Y</label><input value="${Number(c.oy).toFixed(2).replace(/\.00$/,"")}" readonly></div></div></div>
+ <div class="section"><div class="section-title">Landing coordinates</div><div class="coord"><div class="field"><label>X</label><input value="${Number(c.lx).toFixed(2).replace(/\.00$/,"")}" readonly></div><div class="field"><label>Y</label><input value="${Number(c.ly).toFixed(2).replace(/\.00$/,"")}" readonly></div></div><div class="hint">Coordinates are stored as numeric percentages from 0 to 100. Changes are local until you press Save coordinates.</div></div>
+`;
+ $("resetBtn").onclick=()=>{delete coords[keyFor(selected)];getCoords(selected);renderSelected();setSaveStatus("")};
+ $("saveBtn").onclick=saveCoordinates;
+ renderMap(c);
+}
+function setSaveStatus(message,success=false){
+ const el=$("saveStatus");
+ el.textContent=message||"V1.29 Test 21 · Google Sheet writes enabled";
+ el.style.color=message?(success?"#78e0a7":"#ff9aa5"):"";
+}
+async function saveCoordinates(){
+ if(!selected||saving)return;
+ const c=getCoords(selected);
+ if(!selected.ID){setSaveStatus("Cannot save: selected lineup has no ID.");return}
+ saving=true;
+ $("saveBtn").disabled=true;
+ setSaveStatus("Saving coordinates…");
+ try{
+   const payload={action:"saveCoordinates",access_token:sessionStorage.getItem("larryland_google_token"),ID:clean(selected.ID),ORIGIN_X:Number(c.ox),ORIGIN_Y:Number(c.oy),LANDING_X:Number(c.lx),LANDING_Y:Number(c.ly)};
+   const r=await fetch(SHEET_API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)});
+   if(!r.ok)throw new Error("Google Apps Script returned HTTP "+r.status);
+   const result=await r.json();
+   if(!result.success)throw new Error(result.error||"The Google Sheet rejected the save.");
+   selected.ORIGIN_X=String(payload.ORIGIN_X);selected.ORIGIN_Y=String(payload.ORIGIN_Y);selected.LANDING_X=String(payload.LANDING_X);selected.LANDING_Y=String(payload.LANDING_Y);
+   setSaveStatus("Coordinates saved successfully.",true);
+ }catch(e){
+   console.error(e);
+   setSaveStatus("Save failed: "+(e.message||"Unknown error"));
+ }finally{
+   saving=false;
+   $("saveBtn").disabled=false;
+ }
+}
+function renderMap(c){const map=clean(selected&&selected.MAP);$("mapName").textContent=map||"—";$("layoutImage").src="assets/layouts/"+map+".png";$("layoutImage").alt=map+" map layout";$("originPin").style.left=c.ox+"%";$("originPin").style.top=c.oy+"%";$("landingPin").style.left=c.lx+"%";$("landingPin").style.top=c.ly+"%";$("originPin").hidden=false;$("landingPin").hidden=false}
+function updateFilterOptions(){
+ const mapRows=filters.map?lineups.filter(x=>clean(x.MAP)===filters.map):lineups;
+ const agents=unique(mapRows.map(x=>x.AGENT));if(filters.agent&&!agents.includes(filters.agent))filters.agent="";setOptions("agent",agents);
+ let utilRows=filters.agent?lineups.filter(x=>clean(x.AGENT)===filters.agent):lineups;if(filters.map)utilRows=utilRows.filter(x=>clean(x.MAP)===filters.map);const utils=unique(utilRows.map(x=>x.UTILITY));if(filters.utility&&!utils.includes(filters.utility))filters.utility="";setOptions("utility",utils);
+ const sides=unique(lineups.map(x=>normalizeSide(x.SIDE)).filter(Boolean));if(filters.side&&!sides.includes(filters.side))filters.side="";setOptions("side",sides);
+ const maps=unique(lineups.map(x=>x.MAP));if(filters.map&&!maps.includes(filters.map))filters.map="";setOptions("map",maps);
+}
+function renderFilters(){setOptions("map",unique(lineups.map(x=>x.MAP)));updateFilterOptions()}
+async function loadSheet(){
+ try{
+  const r=await fetch(SHEET_API_URL+"?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw Error("Sheet request failed");const data=await r.json();if(!Array.isArray(data))throw Error("Invalid sheet response");
+  lineups=data.map(row=>{const o={};Object.keys(row||{}).forEach(k=>o[k.trim().toUpperCase()]=clean(row[k]));return o}).filter(x=>x.NAME||x.MAP||x.LINK);
+  renderFilters();renderList();
+ }catch(e){$("lineupList").innerHTML='<div class="empty">Unable to load lineups from the Google Sheet.</div>';console.warn(e)}
+}
+["map","agent","utility","side"].forEach(id=>$(meta[id].trigger).onclick=()=>togglePop(id));
+$("search").addEventListener("input",renderList);
+$("clearFilters").onclick=()=>{
+  $("search").value="";
+  filters.map="";filters.agent="";filters.utility="";filters.side="";
+  closePops();updateFilterOptions();renderList();
+};
+document.addEventListener("click",e=>{if(!e.target.closest(".filter-wrap"))closePops()});
+$("mapStage").addEventListener("click",e=>{if(!selected)return;const r=e.currentTarget.getBoundingClientRect();const x=Math.round(Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100))*100)/100;const y=Math.round(Math.max(0,Math.min(100,(e.clientY-r.top)/r.height*100))*100)/100;const c=getCoords(selected);if(mode==="origin"){c.ox=x;c.oy=y}else{c.lx=x;c.ly=y}coords[keyFor(selected)]=c;setSaveStatus("");renderSelected()});
+$("originMode").onclick=()=>{mode="origin";$("originMode").classList.add("active-origin");$("landingMode").classList.remove("active-landing")};$("landingMode").onclick=()=>{mode="landing";$("landingMode").classList.add("active-landing");$("originMode").classList.remove("active-origin")};
+
+async function verifyAdminToken(token){
+ try{
+   const r=await fetch(SHEET_API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"auth",access_token:token})});
+   if(!r.ok) throw Error("Authentication request failed.");
+   const result=await r.json();
+   if(!result.success) throw Error(result.error||"This Google account is not authorized.");
+   return true;
+ }catch(e){$("authGateError").textContent=e.message||"Access denied.";return false}
+}
+async function startAdmin(){
+ const token=sessionStorage.getItem("larryland_google_token");
+ if(token && await verifyAdminToken(token)){
+   $("authGate").remove(); loadSheet(); return;
+ }
+ sessionStorage.removeItem("larryland_google_token");
+ $("authGateMessage").textContent="Sign in with the Google account authorized for LarryLand.";
+ $("adminGoogleButton").innerHTML="";
+ if(window.google && google.accounts && google.accounts.oauth2){
+   const client=google.accounts.oauth2.initTokenClient({
+     client_id:"112605741964-sjcuf58seeojvbk5q8fvleim1jp2vg9o.apps.googleusercontent.com",
+     scope:"openid email profile",
+     callback:async(response)=>{
+       if(!response || !response.access_token){$("authGateError").textContent="Google sign-in did not return an access token.";return}
+       sessionStorage.setItem("larryland_google_token",response.access_token);
+       if(await verifyAdminToken(response.access_token)){ $("authGate").remove(); loadSheet(); }
+     }
+   });
+   const btn=document.createElement("button");btn.className="btn primary";btn.textContent="Sign in with Google";btn.onclick=()=>{ $("authGateError").textContent="";client.requestAccessToken({prompt:"select_account"}) };
+   $("adminGoogleButton").appendChild(btn);
+ }else{
+   $("authGateError").textContent="Google Sign-In is still loading. Please refresh.";
+ }
+}
+window.addEventListener("load",startAdmin);
+
+</script>
+</body>
+</html>

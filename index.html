@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<title>LarryLand</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2310151f'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-family='Arial,sans-serif' font-size='34' font-weight='900' fill='%23f2f4f7'%3EL%3C/text%3E%3C/svg%3E">
+<style>
+:root{--bg:#080a0e;--panel:#10151f;--panel2:#171d29;--text:#f2f4f7;--muted:#9299a8;--line:#293241;--accent:#c7cbd3;--accent2:#e0e3e8}
+*{box-sizing:border-box}body{margin:0;background:#080a0e;color:var(--text);font-family:"Montserrat",ui-sans-serif,system-ui,sans-serif}
+.container{width:min(1180px,calc(100% - 32px));margin:auto}
+header{padding:54px 0 30px;text-align:center}
+.logo{font-weight:900;letter-spacing:.12em;font-size:13px;color:var(--accent);text-transform:uppercase}
+h1{font-size:clamp(36px,6.4vw,66px);line-height:.95;margin:0;letter-spacing:-.055em;font-weight:900}.brand-lockup{display:inline-block}.brand-tagline{width:100%;margin-top:8px;text-align:center;font-size:clamp(16px,2.2vw,22px);line-height:1.1;font-weight:700;letter-spacing:.055em;color:#9ca5b5;white-space:nowrap}.subtitle-row{margin-top:10px;display:flex;align-items:center;justify-content:center;gap:12px}
+.subtitle{font-size:18px;font-weight:600;letter-spacing:.01em;color:#9ca5b5}.admin-link{color:inherit;text-decoration:none;cursor:pointer}.admin-link:hover{text-decoration:underline}
+.socials{display:flex;align-items:center;gap:8px}
+.social{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border:1px solid #283344;border-radius:8px;background:#111722;color:#aeb6c4;text-decoration:none;transition:.18s}
+.social:hover{color:#f4f6f8;background:#182131;border-color:#3a4659;transform:translateY(-1px)}
+.social svg{width:16px;height:16px;fill:currentColor}
+.sub{color:var(--muted);font-size:16px;margin:0 auto;max-width:650px}
+.controls{position:sticky;top:0;z-index:10;background:rgba(11,13,18,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);padding:18px 0}
+.controlgrid{display:grid;grid-template-columns:2fr repeat(4,1fr);gap:10px}.search{text-align:center}.search::placeholder{text-align:center}
+.filter-wrap{position:relative;min-width:0}
+.filter-trigger{width:100%;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:15px 15px;font-size:16px;outline:none;min-height:52px;text-align:center;cursor:pointer;font-family:inherit}
+.filter-trigger:hover,.filter-trigger[aria-expanded="true"]{border-color:#5b6374;background:#151b26}
+.filter-popover{position:absolute;left:0;right:0;top:calc(100% + 8px);z-index:30;background:#10151f;border:1px solid #303a4b;border-radius:12px;padding:7px;box-shadow:0 18px 40px rgba(0,0,0,.45);max-height:280px;overflow-y:auto}
+.filter-option{width:100%;display:block;border:0;background:transparent;color:#dce1e8;border-radius:8px;padding:10px 12px;font:600 14px Montserrat,sans-serif;text-align:center;cursor:pointer}
+.filter-option:hover,.filter-option.selected{background:#202b3d;color:#fff}
+.filter-option.clear-option{color:#9da7b8;border-bottom:1px solid #252e3b;margin-bottom:5px}
+.searchwrap{min-width:0}.searchtip{color:#737c8d;font-size:11px;margin:7px 2px 0;line-height:1.35}
+input,select{width:100%;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:15px 15px;font-size:16px;outline:none;min-height:52px}
+input:focus,select:focus{border-color:#5b6374}
+.stats{display:flex;justify-content:space-between;align-items:center;padding:25px 0 14px;color:var(--muted);font-size:14px}
+button{border:1px solid var(--line);border-radius:9px;background:#111722;color:var(--text);padding:10px 14px;font-size:14px;cursor:pointer}.statbuttons{display:flex;gap:8px}.status{font-size:11px;color:#697386}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding-bottom:50px}
+.card{position:relative;overflow:hidden;background:linear-gradient(145deg,#141925,#10141d);border:1px solid var(--line);border-radius:15px;padding:18px;min-height:190px;display:flex;flex-direction:column;gap:16px;transition:.18s}
+.map-bg{position:absolute;inset:-6%;background-image:linear-gradient(90deg,rgba(16,21,31,.10) 0%,rgba(16,21,31,.18) 20%,rgba(16,21,31,.48) 42%,rgba(16,21,31,.82) 62%,rgba(16,21,31,.98) 78%,rgba(16,21,31,1) 100%),var(--map-image-local);background-repeat:no-repeat;background-position:-20px center;background-size:cover;opacity:.46;filter:saturate(.78);pointer-events:none}
+.agent-bg{position:absolute;right:-18%;top:-7%;bottom:-7%;width:62%;background-image:var(--agent-image-local);background-repeat:no-repeat;background-position:right -18px bottom -56px;background-size:auto 125%;opacity:.64;pointer-events:none;-webkit-mask-image:linear-gradient(90deg,transparent 0%,transparent 8%,rgba(0,0,0,.08) 20%,rgba(0,0,0,.38) 38%,rgba(0,0,0,.76) 58%,#000 78%);mask-image:linear-gradient(90deg,transparent 0%,transparent 8%,rgba(0,0,0,.08) 20%,rgba(0,0,0,.38) 38%,rgba(0,0,0,.76) 58%,#000 78%)}
+.action-watch:hover{background:#30405a}
+
+.card-link{display:block;color:inherit;text-decoration:none;cursor:pointer}
+.card-meta{position:relative;z-index:3;margin-top:auto;display:flex;align-items:center;gap:8px}
+.card-side,.card-utility{height:40px;padding:0 18px;border-radius:8px;background:#273347;color:#f4f6f8;display:flex;align-items:center;justify-content:center;box-sizing:border-box;font-weight:700;font-size:14px}
+.card-side{min-width:76px}
+.card-side.attack{background:#54202a;color:#ff7180}
+.card-side.defense{background:#1f4735;color:#78e0a7}
+.card-utility{min-width:88px}
+.card-content{position:relative;z-index:2;display:flex;flex-direction:column;gap:16px;min-height:154px}
+.card:hover{transform:translateY(-2px);border-color:#394254}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.tag{font-size:11px;font-weight:800;letter-spacing:.06em;padding:6px 9px;border-radius:6px;background:#202634;color:#c9ced8;text-transform:uppercase}
+.tag.side{background:#202735;color:#d5d9e0}
+.name{font-size:19px;font-weight:800;line-height:1.2;margin-bottom:7px}
+
+
+
+
+.empty{text-align:center;padding:70px 20px;color:var(--muted);grid-column:1/-1}
+.loading{grid-column:1/-1;display:flex;justify-content:center;align-items:center;padding:90px 20px;min-height:180px}
+.dots{display:flex;gap:7px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;background:#aeb6c4;animation:loadingDots 1.2s infinite ease-in-out}
+.dot:nth-child(2){animation-delay:.15s}
+.dot:nth-child(3){animation-delay:.3s}
+@keyframes loadingDots{0%,80%,100%{opacity:.25;transform:scale(.75)}40%{opacity:1;transform:scale(1)}}
+footer{border-top:1px solid var(--line);padding:25px 0 40px;color:#686f7d;font-size:12px}
+@media(max-width:850px){.controlgrid{grid-template-columns:1fr 1fr}.searchwrap{grid-column:1/-1}.search{grid-column:auto}.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.brand-tagline{font-size:16px;letter-spacing:.035em}.filter-popover{max-height:240px}.card-side,.card-utility{height:38px;font-size:13px;padding:0 14px}.card-side{min-width:68px}.card-utility{min-width:78px}.subtitle-row{gap:9px}.subtitle{font-size:16px}.social{width:28px;height:28px}.social svg{width:15px;height:15px}.map-bg{inset:-8%;opacity:.34;background-position:-12px center}.agent-bg{right:-20%;width:58%;opacity:.48;background-position:right -12px bottom -40px}.statbuttons{width:100%}.statbuttons button{flex:1}header{padding-top:36px}.container{width:min(100% - 20px,1180px)}.controlgrid{grid-template-columns:1fr}.search{grid-column:auto}.grid{grid-template-columns:1fr}.stats{align-items:flex-start;gap:10px;flex-direction:column}}
+
+/* V1.18 correction: map uses a full-card fade and agent uses a left-transparent mask to eliminate any hard image boundary. */
+</style>
+
+<style id="v129-test15-hover-layout">
+.hover-layout{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;padding:12px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease,visibility .18s ease}
+.card:hover .hover-layout{opacity:1;visibility:visible}
+.hover-layout-inner{position:relative;width:100%;height:auto;aspect-ratio:16/10;max-height:100%;border-radius:10px;overflow:hidden;background:#0d121b;border:1px solid rgba(255,255,255,.10);box-shadow:0 12px 30px rgba(0,0,0,.32)}
+.hover-map-art{position:absolute;left:50%;top:50%;width:auto;height:100%;aspect-ratio:1/1;transform:translate(-50%,-50%);z-index:2;overflow:visible}.hover-map-zoom{position:absolute;width:100%;height:100%;transform-origin:0 0}.hover-layout-image{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0b1018}
+.hover-layout-shade{position:absolute;inset:0;background:rgba(8,10,14,.18);z-index:1}
+.hover-marker{position:absolute;transform:translate(-50%,-50%);z-index:4;pointer-events:none}
+.hover-marker.origin{width:7px;height:7px;border-radius:50%;background:#78e0a7;border:1px solid #f4fff8;box-shadow:0 0 0 1px rgba(120,224,167,.28),0 2px 5px rgba(0,0,0,.5)}
+.hover-marker.landing{width:10px;height:10px}
+.hover-marker.landing:before,.hover-marker.landing:after{content:"";position:absolute;left:4px;top:0;width:2px;height:10px;background:#ff3d5f;border-radius:1px;box-shadow:0 1px 4px rgba(0,0,0,.55)}
+.hover-marker.landing:before{transform:rotate(45deg)}
+.hover-marker.landing:after{transform:rotate(-45deg)}
+.hover-layout-label{position:absolute;left:10px;top:10px;z-index:4;padding:5px 9px;border-radius:6px;background:rgba(8,10,14,.82);color:#d9dee7;font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;pointer-events:none}.hover-layout-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#8e98aa;font-size:12px;font-weight:600;text-align:center;padding:20px;background:#0d121b}
+@media(max-width:560px){.hover-layout{padding:9px}.hover-marker.origin{width:6px;height:6px}.hover-marker.landing{width:9px;height:9px}.hover-marker.landing:before,.hover-marker.landing:after{left:3.5px;height:9px;width:2px}}
+</style>
+
+
+<style id="v129-test21-auth">
+.auth-backdrop{position:fixed;inset:0;z-index:100;background:rgba(3,5,9,.76);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:20px}
+.auth-card{width:min(390px,100%);background:#10151f;border:1px solid #303a4b;border-radius:16px;padding:28px;box-shadow:0 24px 70px rgba(0,0,0,.55);text-align:center}
+.auth-card h2{margin:0 0 8px;font-size:22px;font-weight:800}.auth-card p{margin:0 0 22px;color:#9299a8;font-size:13px;line-height:1.5}.auth-close{margin-top:14px;background:transparent;border-color:transparent;color:#7f899a;font-size:12px}.auth-error{margin-top:12px;color:#ff7180;font-size:12px;line-height:1.4}
+.auth-loading{color:#9299a8;font-size:13px}
+</style>
+
+</head>
+<body>
+<header>
+<div class="container">
+<div class="brand-lockup">
+<h1 class="brand">LARRYLAND</h1>
+<div class="brand-tagline">One-Stop Elite Valorant Lineups</div>
+</div>
+<div class="subtitle-row">
+  <div class="subtitle">created by <a class="admin-link" href="admin.html" id="adminLoginLink">ProDep</a></div>
+  <div class="socials" aria-label="ProDep social links">
+    <a class="social" href="https://www.twitch.tv/prodep" target="_blank" rel="noopener noreferrer" aria-label="ProDep on Twitch" title="Twitch">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2h18v13l-5 5h-4l-3 3v-3H4V2zm2 2v14h5v2.2l2.2-2.2H16l4-4V4H6zm3 3h2v6H9V7zm5 0h2v6h-2V7z"/></svg>
+    </a>
+    <a class="social" href="https://youtube.com/@prodepvods" target="_blank" rel="noopener noreferrer" aria-label="ProDep on YouTube" title="YouTube">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.5v-7l6 3.5-6 3.5z"/></svg>
+    </a>
+  </div>
+</div>
+</div>
+</header>
+
+<section class="controls">
+<div class="container">
+<div class="controlgrid">
+<div class="searchwrap"><input id="search" class="search" placeholder="Search “X Site”, “X Main”, or “Retake”..." autocomplete="off"></div>
+<div class="filter-wrap"><button type="button" class="filter-trigger" id="mapTrigger" aria-haspopup="dialog" aria-expanded="false">All Maps</button>
+<div class="filter-popover" id="mapPopover" role="dialog" aria-label="Select map" hidden></div></div>
+<div class="filter-wrap"><button type="button" class="filter-trigger" id="agentTrigger" aria-haspopup="dialog" aria-expanded="false">All Agents</button>
+<div class="filter-popover" id="agentPopover" role="dialog" aria-label="Select agent" hidden></div></div>
+<div class="filter-wrap"><button type="button" class="filter-trigger" id="utilityTrigger" aria-haspopup="dialog" aria-expanded="false">All Utilities</button>
+<div class="filter-popover" id="utilityPopover" role="dialog" aria-label="Select utility" hidden></div></div>
+<div class="filter-wrap"><button type="button" class="filter-trigger" id="sideTrigger" aria-haspopup="dialog" aria-expanded="false">Attack + Defense</button>
+<div class="filter-popover" id="sidePopover" role="dialog" aria-label="Select side" hidden></div></div>
+</div>
+</div>
+</section>
+
+<main class="container">
+<div class="stats"><span><span id="count"></span><span id="status" class="status"> · Loading Google Sheet…</span></span><div class="statbuttons"><button id="refresh">Refresh data</button><button id="clear">Clear filters</button></div></div>
+<div id="grid" class="grid"></div>
+</main>
+
+
+<div class="auth-backdrop" id="authBackdrop" hidden>
+  <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <h2 id="authTitle">Admin access</h2>
+    <p>Sign in with Google to continue to the LarryLand admin page.</p>
+    <div id="googleAuthButton"></div>
+    <div class="auth-error" id="authError"></div>
+    <button class="auth-close" id="authClose" type="button">Cancel</button>
+  </div>
+</div>
+
+<footer><div class="container">LarryLand · I went into a custom so you don't have to</div></footer>
+
+<script>
+const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbzc-sgwiCKy0sc9jt_EyxholR7FOHUBodu94wmnzaROxgB5OlYmQCb-1pHhaDnRCodz_g/exec";
+let lineups = [];
+let usingLiveSheet = false;
+let isLoading = true;
+
+// V1.28 local-assets test: images are served exclusively from the uploaded GitHub assets.
+// Lookup keys are case-insensitive and punctuation-insensitive (KAY/O -> Kayo).
+const agentImages = {"BREACH": "assets/agents/Breach.png", "YORU": "assets/agents/Yoru.png", "VIPER": "assets/agents/Viper.png", "JETT": "assets/agents/Jett.png", "BRIMSTONE": "assets/agents/Brimstone.png", "KILLJOY": "assets/agents/Killjoy.png", "RAZE": "assets/agents/Raze.png", "SKYE": "assets/agents/Skye.png", "SOVA": "assets/agents/Sova.png", "CYPHER": "assets/agents/Cypher.png", "TEJO": "assets/agents/Tejo.png", "FADE": "assets/agents/Fade.png", "SAGE": "assets/agents/Sage.png", "OMEN": "assets/agents/Omen.png", "HARBOR": "assets/agents/Harbor.png", "MIKS": "assets/agents/Miks.png", "VETO": "assets/agents/Veto.png", "DEADLOCK": "assets/agents/Deadlock.png", "PHOENIX": "assets/agents/Phoenix.png", "CHAMBER": "assets/agents/Chamber.png", "REYNA": "assets/agents/Reyna.png", "NEON": "assets/agents/Neon.png", "ISO": "assets/agents/Iso.png", "KAYO": "assets/agents/Kayo.png", "CLOVE": "assets/agents/Clove.png", "GEKKO": "assets/agents/Gekko.png", "ASTRA": "assets/agents/Astra.png", "VYSE": "assets/agents/Vyse.png", "WAYLAY": "assets/agents/Waylay.png"};
+const mapImages = {"SUNSET": "assets/maps/Sunset.png", "FRACTURE": "assets/maps/Fracture.png", "ICEBOX": "assets/maps/Icebox.png", "HAVEN": "assets/maps/Haven.png", "SUMMIT": "assets/maps/Summit.png", "LOTUS": "assets/maps/Lotus.png", "ASCENT": "assets/maps/Ascent.png", "ABYSS": "assets/maps/Abyss.png", "SPLIT": "assets/maps/Split.png", "PEARL": "assets/maps/Pearl.png", "BIND": "assets/maps/Bind.png", "BREEZE": "assets/maps/Breeze.png", "CORRODE": "assets/maps/Corrode.png"};
+// V1.28 test: all agent and map imagery is loaded exclusively from local GitHub assets.
+const LOCAL_ASSET_BASE = "assets";
+const layoutImages = {"ABYSS": "assets/layouts/Abyss.png", "ASCENT": "assets/layouts/Ascent.png", "BIND": "assets/layouts/Bind.png", "BREEZE": "assets/layouts/Breeze.png", "CORRODE": "assets/layouts/Corrode.png", "FRACTURE": "assets/layouts/Fracture.png", "HAVEN": "assets/layouts/Haven.png", "ICEBOX": "assets/layouts/Icebox.png", "LOTUS": "assets/layouts/Lotus.png", "PEARL": "assets/layouts/Pearl.png", "SPLIT": "assets/layouts/Split.png", "SUMMIT": "assets/layouts/Summit.png", "SUNSET": "assets/layouts/Sunset.png"};
+function agentKey(name){
+  return clean(name)
+    .toUpperCase()
+    .replace(/[’']/g, "")
+    .replace(/[^A-Z0-9]+/g, "");
+}
+function mapKey(name){
+  return clean(name)
+    .toUpperCase()
+    .replace(/[’']/g, "")
+    .replace(/[^A-Z0-9]+/g, "");
+}
+const $ = id => document.getElementById(id);
+const clean = s => (s || "").trim();
+
+function unique(values){
+  return [...new Set(values.map(clean).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+}
+function shuffle(values){
+  const arr=[...values];
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+function optionValuesFor(key, rows){
+  return unique(rows.map(x=>x[key]));
+}
+const filterState={map:"",agent:"",utility:"",side:""};
+const filterMeta={
+  map:{label:"All Maps",trigger:"mapTrigger",popover:"mapPopover"},
+  agent:{label:"All Agents",trigger:"agentTrigger",popover:"agentPopover"},
+  utility:{label:"All Utilities",trigger:"utilityTrigger",popover:"utilityPopover"},
+  side:{label:"Attack + Defense",trigger:"sideTrigger",popover:"sidePopover"}
+};
+function normalizeSide(value){
+  const n=clean(value).toUpperCase();
+  if(n==="ATT" || n==="ATTACK") return "ATT";
+  if(n==="DEF" || n==="DEFENSE") return "DEF";
+  return "";
+}
+function displayFilterValue(id, value, placeholder){
+  if(id==="side") return value==="ATT" ? "Attack" : value==="DEF" ? "Defense" : placeholder;
+  return value || placeholder;
+}
+function setOptions(id, values, placeholder){
+  const meta=filterMeta[id], pop=$(meta.popover), trigger=$(meta.trigger);
+  const current=filterState[id];
+  pop.innerHTML="";
+  const clear=document.createElement("button");
+  clear.type="button"; clear.className="filter-option clear-option";
+  clear.textContent=placeholder;
+  clear.onclick=()=>selectFilter(id,"");
+  pop.appendChild(clear);
+  values.forEach(v=>{
+    const normalized=id==="side" ? normalizeSide(v) : clean(v);
+    if(!normalized) return;
+    const o=document.createElement("button");
+    o.type="button"; o.className="filter-option"+(normalized===current?" selected":"");
+    o.textContent=id==="side" ? (normalized==="ATT" ? "Attack" : "Defense") : v;
+    o.onclick=()=>selectFilter(id,normalized);
+    pop.appendChild(o);
+  });
+  const available=values.map(v=>id==="side"?normalizeSide(v):clean(v)).filter(Boolean);
+  if(current && !available.includes(current)) filterState[id]="";
+  trigger.textContent=displayFilterValue(id,filterState[id],placeholder);
+}
+function selectFilter(id,value){
+  if(id==="side") value=normalizeSide(value);
+  filterState[id]=value;
+  closeFilterPopovers();
+  updateDependentFilters();
+  // updateDependentFilters may reset a stale dependent selection; always redraw
+  // the trigger labels after dependency changes.
+  Object.keys(filterMeta).forEach(k=>{
+    const meta=filterMeta[k];
+    $(meta.trigger).textContent=displayFilterValue(k,filterState[k],meta.label);
+  });
+  render();
+}
+function closeFilterPopovers(){
+  Object.values(filterMeta).forEach(meta=>{
+    const pop=$(meta.popover), trigger=$(meta.trigger);
+    pop.hidden=true; trigger.setAttribute("aria-expanded","false");
+  });
+}
+function toggleFilter(id){
+  const meta=filterMeta[id], pop=$(meta.popover), trigger=$(meta.trigger);
+  const willOpen=pop.hidden;
+  closeFilterPopovers();
+  pop.hidden=!willOpen;
+  trigger.setAttribute("aria-expanded",String(willOpen));
+}
+
+function agentImageSrc(name){ return agentImages[agentKey(name)] || ""; }
+function mapImageSrc(name){ return mapImages[mapKey(name)] || ""; }
+function layoutImageSrc(name){ return layoutImages[mapKey(name)] || ""; }
+function loadLocalImages(){
+  // All agent/map images are bundled locally. No Valorant API is contacted.
+}
+
+function updateDependentFilters(){
+  const m=filterState.map;
+
+  // Map limits the available agents. If the current agent is no longer
+  // available on that map, clear it rather than leaving a stale filter active.
+  const agentRows = m ? lineups.filter(x=>clean(x.MAP)===m) : lineups;
+  const agentValues = optionValuesFor("AGENT", agentRows);
+  if(filterState.agent && !agentValues.includes(filterState.agent)) filterState.agent="";
+  setOptions("agent", agentValues, "All Agents");
+
+  // Agent (and map, when selected) limits the utility choices.
+  let utilityRows = lineups;
+  if(m) utilityRows=utilityRows.filter(x=>clean(x.MAP)===m);
+  if(filterState.agent) utilityRows=utilityRows.filter(x=>clean(x.AGENT)===filterState.agent);
+  const utilityValues = optionValuesFor("UTILITY", utilityRows);
+  if(filterState.utility && !utilityValues.includes(filterState.utility)) filterState.utility="";
+  setOptions("utility", utilityValues, "All Utilities");
+
+  // Side is independent, so always show every side represented in the data.
+  const uniqueSides=[...new Set(optionValuesFor("SIDE", lineups).map(normalizeSide).filter(Boolean))];
+  if(filterState.side && !uniqueSides.includes(filterState.side)) filterState.side="";
+  setOptions("side", uniqueSides, "Attack + Defense");
+}
+
+
+function numericCoordinate(value){
+  const n=Number(value);
+  return Number.isFinite(n) && n>=0 && n<=100 ? n : null;
+}
+function layoutAssetPath(mapName){
+  const cleanName=clean(mapName);
+  if(!cleanName) return "";
+  return "assets/layouts/" + cleanName.replace(/\\/g,"/").split("/").pop() + ".png";
+}
+function mapImageSpaceCoordinate(value, axis){
+  const n=numericCoordinate(value);
+  if(n===null)return null;
+  // Admin stores coordinates in the 16:10 map-stage coordinate space.
+  // The actual square layout artwork is contain-fitted inside that stage,
+  // leaving horizontal letterbox space. Convert back onto the artwork.
+  const imageAspect=1;
+  const stageAspect=16/10;
+  if(axis==="x"){
+    const imageWidthPct=(imageAspect/stageAspect)*100; // 62.5%
+    const leftPad=(100-imageWidthPct)/2; // 18.75%
+    return Math.max(0,Math.min(100,(n-leftPad)/imageWidthPct*100));
+  }
+  return n;
+}
+function hoverLayoutMarkup(x){
+  const layout=layoutAssetPath(x.MAP);
+  const ox=mapImageSpaceCoordinate(x.ORIGIN_X,"x"), oy=mapImageSpaceCoordinate(x.ORIGIN_Y,"y");
+  const lx=mapImageSpaceCoordinate(x.LANDING_X,"x"), ly=mapImageSpaceCoordinate(x.LANDING_Y,"y");
+  if(!layout) return "";
+
+  const points=[];
+  if(ox!==null && oy!==null) points.push([ox,oy]);
+  if(lx!==null && ly!==null) points.push([lx,ly]);
+
+  const cx=points.length ? points.reduce((sum,p)=>sum+p[0],0)/points.length : 50;
+  const cy=points.length ? points.reduce((sum,p)=>sum+p[1],0)/points.length : 50;
+  const minX=points.length ? Math.min(...points.map(p=>p[0])) : 50;
+  const maxX=points.length ? Math.max(...points.map(p=>p[0])) : 50;
+  const minY=points.length ? Math.min(...points.map(p=>p[1])) : 50;
+  const maxY=points.length ? Math.max(...points.map(p=>p[1])) : 50;
+  const spanX=maxX-minX;
+  const spanY=maxY-minY;
+  const distance=Math.hypot(spanX,spanY);
+
+  /*
+   * Zoom is driven primarily by the distance between the two saved points:
+   * close points => tighter preview, far points => wider context.
+   *
+   * The second calculation is a hard safety limit so neither marker can ever
+   * be pushed outside the visible preview.
+   */
+  const desiredZoom=distance>0 ? 1 + 60/(distance+20) : 2.4;
+  const horizontalViewport=62.5;
+  const verticalViewport=100;
+  const fitZoomX=horizontalViewport/Math.max(1,spanX+8);
+  const fitZoomY=verticalViewport/Math.max(1,spanY+8);
+  const zoom=Math.max(1,Math.min(3.5,desiredZoom,fitZoomX,fitZoomY));
+
+  const width=100*zoom;
+  const height=100*zoom;
+  const left=50-cx*zoom;
+  const top=50-cy*zoom;
+  const zoomStyle=`width:${width}%;height:${height}%;left:${left}%;top:${top}%;transform:none;`;
+
+  const origin=(ox!==null && oy!==null)
+    ? `<span class="hover-marker origin" style="left:${ox}%;top:${oy}%" aria-label="Origin"></span>` : "";
+  const landing=(lx!==null && ly!==null)
+    ? `<span class="hover-marker landing" style="left:${lx}%;top:${ly}%" aria-label="Landing"></span>` : "";
+
+  return `<div class="hover-layout" aria-hidden="true"><div class="hover-layout-inner"><div class="hover-map-art"><div class="hover-map-zoom" style="${zoomStyle}"><img class="hover-layout-image" src="${escAttr(layout)}" alt="">${origin}${landing}</div></div><div class="hover-layout-shade"></div><span class="hover-layout-label">Map Preview</span></div></div>`;
+}
+function render(){
+ if(isLoading){
+   $("count").textContent="";
+   $("grid").innerHTML=`<div class="loading" aria-label="Loading"><div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div></div>`;
+   return;
+ }
+ const q=$("search").value.toLowerCase().trim(), m=filterState.map, a=filterState.agent, u=filterState.utility, s=filterState.side;
+ const normalizedSide=v=>{
+   const n=clean(v).toUpperCase();
+   return n==="ATT" || n==="ATTACK" ? "ATT" : n==="DEF" || n==="DEFENSE" ? "DEF" : n;
+ };
+ let results=lineups.filter(x=>
+   (!q || clean(x.NAME).toLowerCase().includes(q)) &&
+   (!m || clean(x.MAP)===m) &&
+   (!a || clean(x.AGENT)===a) &&
+   (!u || clean(x.UTILITY)===u) &&
+   (!s || normalizedSide(x.SIDE)===s)
+ );
+
+ const hasFilters=Boolean(q || m || a || u || s);
+ if(hasFilters){
+   results.sort((x,y)=>clean(x.NAME).localeCompare(clean(y.NAME),undefined,{sensitivity:"base"}));
+ }else{
+   results=shuffle(results);
+ }
+ $("count").textContent=`${results.length} lineup${results.length===1?"":"s"} found`;
+ $("grid").innerHTML=results.map(x=>{
+   const link=clean(x.LINK);
+   return link
+     ? `<a class="card card-link" href="${escAttr(link)}" target="_blank" rel="noopener noreferrer" style="--agent-image-local:url('${escAttr(agentImageSrc(x.AGENT))}');--map-image-local:url('${escAttr(mapImageSrc(x.MAP))}')">
+         <div class="map-bg" aria-hidden="true"></div>
+         <div class="agent-bg" aria-hidden="true"></div>
+         ${hoverLayoutMarkup(x)}
+         <div class="card-content">
+           <div class="tags"><span class="tag">${esc(x.MAP)}</span><span class="tag">${esc(x.AGENT)}</span></div>
+           <div class="name">${esc(x.NAME)}</div>
+           <div class="card-meta">
+             <span class="card-side ${clean(x.SIDE).toUpperCase()==="ATT" ? "attack" : "defense"}">${esc(x.SIDE)}</span>
+             <span class="card-utility">${esc(x.UTILITY)}</span>
+           </div>
+         </div>
+       </a>`
+     : `<article class="card" style="--agent-image-local:url('${escAttr(agentImageSrc(x.AGENT))}');--map-image-local:url('${escAttr(mapImageSrc(x.MAP))}')">
+         <div class="map-bg" aria-hidden="true"></div>
+         <div class="agent-bg" aria-hidden="true"></div>
+         ${hoverLayoutMarkup(x)}
+         <div class="card-content">
+           <div class="tags"><span class="tag">${esc(x.MAP)}</span><span class="tag">${esc(x.AGENT)}</span></div>
+           <div class="name">${esc(x.NAME)}</div>
+           <div class="card-meta"><span class="card-side ${clean(x.SIDE).toUpperCase()==="ATT" ? "attack" : "defense"}">${esc(x.SIDE)}</span><span class="card-utility">${esc(x.UTILITY)}</span></div>
+         </div>
+       </article>`;
+  }).join("") || `<div class="empty">No lineups are currently loaded.<br><br>Check the Google Sheet sharing settings, then click “Refresh data”.</div>`;
+}
+
+function esc(v){return clean(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function escAttr(v){return esc(v)}
+
+function parseCSV(text){
+  const rows=[];
+  let row=[], field="", quoted=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i], next=text[i+1];
+    if(ch==='"'){
+      if(quoted && next==='"'){field+='"';i++;}
+      else quoted=!quoted;
+    }else if(ch===',' && !quoted){
+      row.push(field); field="";
+    }else if((ch==='\n'||ch==='\r') && !quoted){
+      if(ch==='\r' && next==='\n') i++;
+      row.push(field); field="";
+      if(row.some(v=>v.trim()!=="")) rows.push(row);
+      row=[];
+    }else{
+      field+=ch;
+    }
+  }
+  if(field!=="" || row.length){
+    row.push(field);
+    if(row.some(v=>v.trim()!=="")) rows.push(row);
+  }
+  return rows;
+}
+
+function csvToLineups(text){
+  const rows=parseCSV(text);
+  if(rows.length<2) throw new Error("The Google Sheet appears to be empty.");
+  const headers=rows[0].map(h=>clean(h).toUpperCase());
+  const required=["MAP","AGENT","UTILITY","SIDE","NAME","LINK"];
+  if(!required.every(h=>headers.includes(h))) throw new Error("The Google Sheet columns do not match the expected columns.");
+  return rows.slice(1).map(row=>{
+    const obj={};
+    headers.forEach((h,i)=>obj[h]=clean(row[i]||""));
+    return obj;
+  }).filter(x=>x.NAME || x.LINK || x.MAP);
+}
+
+async function loadSheet(){
+  $("status").textContent=" · Updating…";
+  try{
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),15000);
+    let response;
+    try{
+      response=await fetch(SHEET_API_URL + "?t=" + Date.now(), {cache:"no-store",signal:controller.signal});
+    }finally{
+      clearTimeout(timeout);
+    }
+    if(!response.ok) throw new Error("Google Sheets returned an error.");
+    const text=await response.text();
+    const fresh=JSON.parse(text);
+    if(!Array.isArray(fresh)) throw new Error("Apps Script did not return an array.");
+    if(!fresh.length) throw new Error("The Google Apps Script returned no lineup rows.");
+    lineups=fresh.map(row=>{
+      const item={};
+      Object.keys(row||{}).forEach(key=>item[key.trim().toUpperCase()]=clean(row[key]));
+      return item;
+    }).filter(x=>x.NAME || x.LINK || x.MAP);
+    usingLiveSheet=true;
+    isLoading=false;
+    $("status").textContent=` · Live · Updated ${new Date().toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})}`;
+    setOptions("map", optionValuesFor("MAP", lineups), "All Maps");
+    updateDependentFilters();
+    Object.keys(filterMeta).forEach(k=>$(filterMeta[k].trigger).textContent=displayFilterValue(k,filterState[k],filterMeta[k].label));
+    render();
+  }catch(error){
+    usingLiveSheet=false;
+    if(error && error.name === "AbortError") console.warn("LarryLand: Google Sheet request timed out after 15 seconds.");
+    lineups=[];
+    isLoading=false;
+    $("status").textContent=" · Unable to connect to Google Sheet";
+    setOptions("map", [], "All Maps");
+    setOptions("agent", [], "All Agents");
+    setOptions("utility", [], "All Utilities");
+    render();
+    console.warn(error);
+  }
+}
+
+["map","agent","utility","side"].forEach(id=>{
+  $(filterMeta[id].trigger).addEventListener("click",()=>toggleFilter(id));
+});
+$("search").addEventListener("input",render);
+document.addEventListener("click",event=>{
+  if(!event.target.closest(".filter-wrap")) closeFilterPopovers();
+});
+$("clear").onclick=()=>{
+  $("search").value="";
+  Object.keys(filterState).forEach(id=>filterState[id]="");
+  closeFilterPopovers();
+  updateDependentFilters();
+  Object.keys(filterMeta).forEach(k=>$(filterMeta[k].trigger).textContent=displayFilterValue(k,filterState[k],filterMeta[k].label));
+  render();
+};
+
+$("refresh").onclick=loadSheet;
+
+setOptions("map", optionValuesFor("MAP", lineups), "All Maps");
+updateDependentFilters();
+Object.keys(filterMeta).forEach(k=>$(filterMeta[k].trigger).textContent=displayFilterValue(k,filterState[k],filterMeta[k].label));
+
+// Load the latest Sheet data on page load, then check again every 5 minutes. Google Sheets is the only lineup-data source; local GitHub assets are the only image source.
+loadLocalImages();
+// Show the three-dot loader immediately while the Google Sheet is loading.
+render();
+loadSheet();
+setInterval(loadSheet, 5*60*1000);
+
+const GOOGLE_CLIENT_ID="112605741964-sjcuf58seeojvbk5q8fvleim1jp2vg9o.apps.googleusercontent.com";
+let googleTokenClient=null;
+function showAuthError(message){$("authError").textContent=message||""}
+function openAdminLogin(e){
+  if(e)e.preventDefault();
+  $("authBackdrop").hidden=false; showAuthError("");
+  if(!window.google || !google.accounts || !google.accounts.oauth2){
+    showAuthError("Google Sign-In is still loading. Please try again in a moment.");
+    return;
+  }
+  googleTokenClient=google.accounts.oauth2.initTokenClient({
+    client_id:GOOGLE_CLIENT_ID,
+    scope:"openid email profile",
+    callback:async(response)=>{
+      if(!response || !response.access_token){showAuthError("Google sign-in did not return an access token.");return}
+      sessionStorage.setItem("larryland_google_token",response.access_token);
+      try{
+        const r=await fetch(SHEET_API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"auth",access_token:response.access_token})});
+        const result=await r.json();
+        if(!result.success)throw Error(result.error||"This Google account is not authorized.");
+        window.location.href="admin.html";
+      }catch(err){
+        sessionStorage.removeItem("larryland_google_token");
+        showAuthError(err.message||"Access denied.");
+      }
+    }
+  });
+  googleTokenClient.requestAccessToken({prompt:"select_account"});
+}
+$("adminLoginLink").addEventListener("click",openAdminLogin);
+$("authClose").addEventListener("click",()=>{$("authBackdrop").hidden=true});
+$("authBackdrop").addEventListener("click",e=>{if(e.target===$("authBackdrop"))$("authBackdrop").hidden=true});
+
+</script>
+</body>
+</html>
