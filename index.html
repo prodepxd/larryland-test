@@ -91,12 +91,6 @@ footer{border-top:1px solid var(--line);padding:25px 0 40px;color:#686f7d;font-s
 </style>
 
 
-<style id="v129-test21-auth">
-.auth-backdrop{position:fixed;inset:0;z-index:100;background:rgba(3,5,9,.76);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:20px}
-.auth-card{width:min(390px,100%);background:#10151f;border:1px solid #303a4b;border-radius:16px;padding:28px;box-shadow:0 24px 70px rgba(0,0,0,.55);text-align:center}
-.auth-card h2{margin:0 0 8px;font-size:22px;font-weight:800}.auth-card p{margin:0 0 22px;color:#9299a8;font-size:13px;line-height:1.5}.auth-close{margin-top:14px;background:transparent;border-color:transparent;color:#7f899a;font-size:12px}.auth-error{margin-top:12px;color:#ff7180;font-size:12px;line-height:1.4}
-.auth-loading{color:#9299a8;font-size:13px}
-</style>
 
 </head>
 <body>
@@ -142,15 +136,6 @@ footer{border-top:1px solid var(--line);padding:25px 0 40px;color:#686f7d;font-s
 </main>
 
 
-<div class="auth-backdrop" id="authBackdrop" hidden>
-  <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="authTitle">
-    <h2 id="authTitle">Admin access</h2>
-    <p>Sign in with Google to continue to the LarryLand admin page.</p>
-    <div id="googleAuthButton"></div>
-    <div class="auth-error" id="authError"></div>
-    <button class="auth-close" id="authClose" type="button">Cancel</button>
-  </div>
-</div>
 
 <footer><div class="container">LarryLand · I went into a custom so you don't have to</div></footer>
 
@@ -535,36 +520,46 @@ setInterval(loadSheet, 5*60*1000);
 
 const GOOGLE_CLIENT_ID="112605741964-sjcuf58seeojvbk5q8fvleim1jp2vg9o.apps.googleusercontent.com";
 let googleTokenClient=null;
-function showAuthError(message){$("authError").textContent=message||""}
+
 function openAdminLogin(e){
   if(e)e.preventDefault();
-  $("authBackdrop").hidden=false; showAuthError("");
   if(!window.google || !google.accounts || !google.accounts.oauth2){
-    showAuthError("Google Sign-In is still loading. Please try again in a moment.");
+    alert("Google Sign-In is still loading. Please try again in a moment.");
     return;
   }
+
   googleTokenClient=google.accounts.oauth2.initTokenClient({
     client_id:GOOGLE_CLIENT_ID,
     scope:"openid email profile",
     callback:async(response)=>{
-      if(!response || !response.access_token){showAuthError("Google sign-in did not return an access token.");return}
+      if(!response || !response.access_token){
+        alert("Google sign-in did not return an access token.");
+        return;
+      }
+
       sessionStorage.setItem("larryland_google_token",response.access_token);
       try{
-        const r=await fetch(SHEET_API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"auth",access_token:response.access_token})});
+        const r=await fetch(SHEET_API_URL,{
+          method:"POST",
+          headers:{"Content-Type":"text/plain;charset=utf-8"},
+          body:JSON.stringify({action:"auth",access_token:response.access_token})
+        });
         const result=await r.json();
         if(!result.success)throw Error(result.error||"This Google account is not authorized.");
         window.location.href="admin.html";
       }catch(err){
         sessionStorage.removeItem("larryland_google_token");
-        showAuthError(err.message||"Access denied.");
+        alert(err.message||"Access denied.");
       }
     }
   });
+
+  // This call is made directly from the ProDep click so Google can open its
+  // native account chooser without an intermediate LarryLand login modal.
   googleTokenClient.requestAccessToken({prompt:"select_account"});
 }
+
 $("adminLoginLink").addEventListener("click",openAdminLogin);
-$("authClose").addEventListener("click",()=>{$("authBackdrop").hidden=true});
-$("authBackdrop").addEventListener("click",e=>{if(e.target===$("authBackdrop"))$("authBackdrop").hidden=true});
 
 </script>
 </body>
